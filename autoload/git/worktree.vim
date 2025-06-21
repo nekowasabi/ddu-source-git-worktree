@@ -128,7 +128,7 @@ function! git#worktree#del_worktree_at_line(path, lineNr) abort
     if !empty(l:branch_name)
       let l:confirm_msg .= " (branch: " . l:branch_name . ")"
     endif
-    let l:confirm_msg .= "? (y/N): "
+    let l:confirm_msg .= "? (including uncommitted changes) (y/N): "
     
     let l:choice = input(l:confirm_msg)
     if l:choice !=# 'y' && l:choice !=# 'Y'
@@ -136,8 +136,8 @@ function! git#worktree#del_worktree_at_line(path, lineNr) abort
       return 0
     endif
     
-    " git worktree remove コマンド実行
-    let l:remove_output = system('git worktree remove ' . shellescape(a:path))
+    " git worktree remove コマンド実行（--forceで未コミット変更も削除）
+    let l:remove_output = system('git worktree remove --force ' . shellescape(a:path))
     if v:shell_error != 0
       echohl ErrorMsg
       echo "\nFailed to remove worktree: " . l:remove_output
